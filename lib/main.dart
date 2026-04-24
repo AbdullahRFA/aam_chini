@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart'; // Import Image Picker
 import 'mango_classifier.dart';
 
 late List<CameraDescription> _cameras;
@@ -37,6 +38,7 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   CameraController? controller;
   final MangoClassifier _classifier = MangoClassifier();
+  final ImagePicker _picker = ImagePicker(); // Initialize Picker
 
   File? _capturedFile;
   String _resultLabel = "";
@@ -53,27 +55,41 @@ class _CameraScreenState extends State<CameraScreen> {
     await _classifier.loadModel();
     controller = CameraController(
       _cameras[0],
-      ResolutionPreset.high, // Better resolution for static capture
+      ResolutionPreset.high,
       enableAudio: false,
     );
     await controller!.initialize();
     if (mounted) setState(() {});
   }
 
+  // Handle Gallery Uploads
+  Future<void> _pickAndProcessImage() async {
+    if (_isProcessing) return;
+
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      await _processImage(File(pickedFile.path));
+    }
+  }
+
+  // Handle Real-time Camera Capture
   Future<void> _captureAndProcess() async {
     if (controller == null || !controller!.value.isInitialized || _isProcessing) return;
 
+    final XFile photo = await controller!.takePicture();
+    await _processImage(File(photo.path));
+  }
+
+  // Unified Processing Logic
+  Future<void> _processImage(File file) async {
     try {
       setState(() => _isProcessing = true);
 
-      // 1. Take the picture
-      final XFile photo = await controller!.takePicture();
-
-      // 2. Run the AI process
-      final result = await _classifier.predictFromFile(File(photo.path));
+      final result = await _classifier.predictFromFile(file);
 
       setState(() {
-        _capturedFile = File(photo.path);
+        _capturedFile = file;
         _resultLabel = result['label'];
         _confidence = result['confidence'];
         _isProcessing = false;
@@ -118,13 +134,11 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  // SCREEN 1: Camera UI
   Widget _buildCameraView() {
     return Stack(
       children: [
         Positioned.fill(child: CameraPreview(controller!)),
 
-        // Guidance Box
         Center(
           child: Container(
             width: 280,
@@ -139,24 +153,39 @@ class _CameraScreenState extends State<CameraScreen> {
         if (_isProcessing)
           const Center(child: CircularProgressIndicator(color: Colors.white)),
 
-        // Capture Button
+        // Bottom Controls
         Positioned(
           bottom: 40,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: FloatingActionButton.large(
-              onPressed: _isProcessing ? null : _captureAndProcess,
-              backgroundColor: Colors.white,
-              child: const Icon(Icons.camera_alt, color: Colors.green, size: 40),
-            ),
+          left: 30,
+          right: 30,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Gallery Button
+              FloatingActionButton(
+                heroTag: "gallery",
+                onPressed: _isProcessing ? null : _pickAndProcessImage,
+                backgroundColor: Colors.white,
+                child: const Icon(Icons.photo_library, color: Colors.green),
+              ),
+
+              // Capture Button
+              FloatingActionButton.large(
+                heroTag: "capture",
+                onPressed: _isProcessing ? null : _captureAndProcess,
+                backgroundColor: Colors.white,
+                child: const Icon(Icons.camera_alt, color: Colors.green, size: 40),
+              ),
+
+              // Placeholder for layout balance
+              const SizedBox(width: 56),
+            ],
           ),
         ),
       ],
     );
   }
 
-  // SCREEN 2: Result UI
   Widget _buildResultView() {
     return Column(
       children: [
@@ -199,7 +228,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 ElevatedButton.icon(
                   onPressed: _retake,
                   icon: const Icon(Icons.refresh),
-                  label: const Text("Retake Photo", style: TextStyle(fontSize: 18)),
+                  label: const Text("Retake / New Photo", style: TextStyle(fontSize: 18)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green[800],
                     foregroundColor: Colors.white,
