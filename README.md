@@ -44,7 +44,9 @@ A computer vision project designed to identify and classify different varieties 
 
 ## 📈 Performance Summary
 
-*Coming Soon: Add a snippet of your confusion matrix results or key accuracy metrics here.*
+| SS1 | SS2 | SS3 |
+|:---:|:---:|:---:|
+| <img src="/assets/SS/photo_2026-08-11 19.30.03.jpeg" width="200"> | <img src="/assets/SS/photo_2026-08-11 19.30.07.jpeg" width="200"> | <img src="/assets/SS/photo_2026-08-11 19.30.11.jpeg" width="200"> |
 
 ## 💡 Potential Applications
 
