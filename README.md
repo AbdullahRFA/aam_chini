@@ -46,13 +46,24 @@ A computer vision project designed to identify and classify different varieties 
 
 | SS1 | SS2 | SS3 |
 |:---:|:---:|:---:|
-| <img src="/assets/SS/photo_2026-08-11 19.30.03.jpeg" width="200"> | <img src="/assets/SS/photo_2026-08-11 19.30.07.jpeg" width="200"> | <img src="/assets/SS/photo_2026-08-11 19.30.11.jpeg" width="200"> |
+| <img src="/assets/SS/photo_2026-08-11 19.30.03.jpeg" width="230"> | <img src="/assets/SS/photo_2026-08-11 19.30.07.jpeg" width="230"> | <img src="/assets/SS/photo_2026-08-11 19.30.11.jpeg" width="230"> |
 
 ## 💡 Potential Applications
 
 * **Agricultural Technology:** Assisting farmers and distributors in automated sorting and quality assessment.
 * **Mobile Solutions:** Integration into smartphone applications to empower consumers and retailers with instant variety identification.
 * **Supply Chain:** Enhancing transparency in the fruit distribution network.
+  
+---
+
+
+**Abdullah Nazmus-Sakib**
+
+- **Role:** Computer Science & Engineering Undergraduate Developer
+- **Specializations:** Full-Stack Developer (MERN, Python/Django/Flask, Next.js, TypeScript, MySQL) | AI/ML & SQA Learner | Flutter Developer
+- **Status:** Aspiring Software Engineer | Open to Software Engineering Internships
+- **GitHub:** [@AbdullahRFA](https://github.com/AbdullahRFA)
+- **LinkedIn:** [@AbdullahRFA](https://www.linkedin.com/in/abdullahrfa/)
 
 ## 🛡 License
 
